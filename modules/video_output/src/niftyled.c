@@ -44,8 +44,8 @@ static int              Open( vlc_object_t *obj );
 static void             Close( vlc_object_t *obj );
 static picture_pool_t * Pool(vout_display_t *vd, unsigned count);
 static int              Control(vout_display_t *, int, va_list);
-static void             PreparePic(vout_display_t *vd, picture_t *picture);
-static void             DisplayPic(vout_display_t *vd, picture_t *picture);
+static void             PreparePic(vout_display_t *vd, picture_t *picture, subpicture_t *s);
+static void             DisplayPic(vout_display_t *vd, picture_t *picture, subpicture_t *s);
 
 
 /*****************************************************************************
@@ -74,9 +74,9 @@ vlc_module_begin();
     set_subcategory( SUBCAT_VIDEO_VOUT );
     set_description( "niftyled LED output plugin" );
     set_capability( "vout display", 0 );
-    add_string(PROP_CFGFILE, "~/.niftyvlc.xml", NULL, T_CFGFILE, TL_CFGFILE, false);
-    add_integer(PROP_WIDTH, 20, NULL, T_WIDTH, TL_WIDTH, false);
-    add_integer(PROP_HEIGHT, 20, NULL, T_HEIGHT, TL_HEIGHT, false);
+    add_string(PROP_CFGFILE, "~/.niftyvlc.xml", T_CFGFILE, TL_CFGFILE, false);
+    add_integer(PROP_WIDTH, 20, T_WIDTH, TL_WIDTH, false);
+    add_integer(PROP_HEIGHT, 20, T_HEIGHT, TL_HEIGHT, false);
     set_callbacks( Open, Close );
 vlc_module_end();
 
@@ -93,13 +93,15 @@ struct vout_display_sys_t
         
     /*** niftyled stuff */
 
-    /* current settings */
-    LedSettings *settings;
-    /* first hardware */
+    /** current settings */
+    LedPrefs *prefs;
+	/** current setup */
+	LedSetup *setup;
+    /** first hardware */
     LedHardware *hw;
-    /* temporary frame */
+    /** temporary frame */
     LedFrame *frame;
-    /* dimensions of frame */
+    /** dimensions of frame */
     LedFrameCord width, height;
 };
 
@@ -146,39 +148,6 @@ static void _log(void *o, NftLoglevel level, const char *file, const char *func,
     }
 }
 
-/** get width of LED-setup */
-static LedFrameCord _get_setup_width(LedHardware *first)
-{
-        LedFrameCord width = 0;
-        LedHardware *h;
-        for(h = first; h; h = led_hardware_sibling_next(h))
-        {
-                LedTile *tile = led_hardware_get_tile(h);
-                LedFrameCord t = led_tile_get_width(tile)+led_tile_get_x(tile);
-                if(t > width)
-                        width = t;
-        }
-
-        return width;
-}
-
-/** get height of LED-setup */
-static LedFrameCord _get_setup_height(LedHardware *first)
-{
-        LedFrameCord height = 0;
-        LedHardware *h;
-        for(h = first; h; h = led_hardware_sibling_next(h))
-        {
-                LedTile *tile = led_hardware_get_tile(h);
-                LedFrameCord t = led_tile_get_height(tile) + led_tile_get_y(tile);
-                if(t > height)
-                        height = t;
-        }
-
-        return height;
-}
-
-
 
 /**
  * initialize plugin resources
@@ -201,39 +170,59 @@ static int Open(vlc_object_t *obj)
     int result = VLC_EGENERIC;
 
     /* check libniftyled binary version compatibility */
-    LED_CHECK_VERSION
+    NFT_LED_CHECK_VERSION
                 
     /* register logging function to pipe niftyled logging through VLC */
     nft_log_func_register(_log, obj);
         
     /* set default loglevel */
 	//nft_log_level_set(var_InheritInteger(vd, PROP_VERBOSITY));
-    nft_log_level_set(L_QUIET);
-        
-    /* parse settings-file */
-    char *filename = var_InheritString(vd, PROP_CFGFILE);
-	if(!(sys->settings = led_settings_load(filename)))
-    {
-        msg_Err(obj, "Failed to load settings \"%s\"", filename);
-        result = VLC_ENOITEM;
-        free(filename);
-        goto _o_error;
-    }
+    nft_log_level_set(L_INFO);
+
+	sys->prefs = led_prefs_init();
+	sys->frame = NULL;
+	sys->setup = NULL;
+	
+	/* initialize babl */
+	led_pixel_format_new();
+
+	/* parse config-file */
+	LedPrefsNode *pnode;
+	char *filename = var_InheritString(vd, PROP_CFGFILE);
+	if(!(pnode = led_prefs_node_from_file(filename)))
+	{
+		msg_Err(obj, "failed to load config from \"%s\"", filename);
+		result = VLC_ENOITEM;
+		free(filename);
+		goto _o_error;
+	}
+
+	/* create setup from prefs-node */
+	if(!(sys->setup = led_prefs_setup_from_node(sys->prefs, pnode)))
+	{
+		msg_Err(obj, "No valid setup found in preferences file \"%s\"", filename);
+		led_prefs_node_free(pnode);
+		result = VLC_ENOITEM;
+		free(filename);	
+		goto _o_error;
+	}
+
+	led_prefs_node_free(pnode);
     free(filename);
 
     /* get first toplevel hardware */
-    if(!(sys->hw = led_settings_hardware_first(sys->settings)))
+    if(!(sys->hw = led_setup_get_hardware(sys->setup)))
     {
-        msg_Warn(obj, "No LED-hardware found in config.");
+        msg_Warn(obj, "No <hardware> found in config.");
         result = VLC_ENOITEM;
         goto _o_error;
     }
 
     /* determine dimensions of LED setup */
     if((sys->width = (LedFrameCord) var_InheritInteger(vd, PROP_WIDTH)) <= 0)
-        sys->width = _get_setup_width(sys->hw);
+        sys->width = led_setup_get_width(sys->setup);
     if((sys->height = (LedFrameCord) var_InheritInteger(vd, PROP_HEIGHT)) <= 0)
-        sys->height = _get_setup_height(sys->hw);
+        sys->height = led_setup_get_height(sys->setup);
 
     msg_Info(obj, "initialized %dx%d pixel LED setup", sys->width, sys->height);
 
@@ -302,7 +291,7 @@ static void Close( vlc_object_t *obj )
     /* free niftyled resources */
 	led_hardware_list_destroy(sys->hw);
 	led_frame_destroy(sys->frame);
-    led_settings_destroy(sys->settings);
+    led_prefs_deinit(sys->prefs);
         
     /* free descriptor */    
     free(sys);
@@ -334,9 +323,13 @@ static picture_pool_t *Pool(vout_display_t *vd, unsigned count)
     led_hardware_print(sys->hw, L_DEBUG);
     
     /* initialize pixel->led mapping */
-    if(!led_hardware_list_refresh_mapping(sys->hw, sys->frame))
+    if(!led_hardware_list_refresh_mapping(sys->hw))
             goto _p_error;
-
+		
+	/* precalc memory offsets for actual mapping */
+    if(!led_chain_map_from_frame(led_hardware_get_chain(sys->hw), sys->frame))
+            goto _p_error;
+		
     /* set correct gain to hardware */
     if(!led_hardware_list_refresh_gain(sys->hw))
             goto _p_error;
@@ -379,7 +372,7 @@ static int Control(vout_display_t *vd, int query, va_list args)
 /**
  * prepare display of a picture
  */
-static void PreparePic(vout_display_t *vd, picture_t *p)
+static void PreparePic(vout_display_t *vd, picture_t *p, subpicture_t *s)
 {
     //msg_Info(vd, "Prepare");
     vout_display_sys_t *sys = vd->sys;
@@ -400,7 +393,7 @@ static void PreparePic(vout_display_t *vd, picture_t *p)
 
     /* fill chain of every hardware from frame-buffer */
     LedHardware *h;
-    for(h = sys->hw; h; h = led_hardware_sibling_next(h))
+    for(h = sys->hw; h; h = led_hardware_list_get_next(h))
     {
         if(!led_chain_fill_from_frame(led_hardware_get_chain(h), sys->frame))
         {
@@ -417,7 +410,7 @@ static void PreparePic(vout_display_t *vd, picture_t *p)
 /**
  * display a picture
  */
-static void DisplayPic(vout_display_t *vd, picture_t *p)
+static void DisplayPic(vout_display_t *vd, picture_t *p, subpicture_t *s)
 {
 
     /* set VLC buffer as buffer in LedFrame */
