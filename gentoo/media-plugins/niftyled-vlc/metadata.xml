@@ -3,10 +3,16 @@
 <pkgmetadata>
 <herd>niftylight</herd>
 <maintainer>
+  <name>Daniel Hiepler</name>
   <email>daniel-gentoo@niftylight.de</email>
 </maintainer>
+<upstream>
+  <remote-id type="github">niftylight/niftyled-vlc</remote-id>
+  <doc>http://wiki.niftylight.de/Vlc-output</doc>
+  <changelog>http://github.com/niftylight/niftyled-vlc/commits/master</changelog>
+  <bugs-to>http://github.com/niftylight/niftyled-vlc/issues</bugs-to>
+</upstream>
 <use>
-  <flag name='debug'>Compile for debugging (also modify CFLAGS and FEATURES)</flag>
+  <flag name='debug'>Compile for debugging (don't forget to modify CFLAGS and FEATURES)</flag>
 </use>
-<bugs-to>http://github.com/niftylight/niftyled-vlc/issues</bugs-to>
 </pkgmetadata>
