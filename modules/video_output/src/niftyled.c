@@ -170,7 +170,7 @@ static int Open(vlc_object_t *obj)
     int result = VLC_EGENERIC;
 
     /* check libniftyled binary version compatibility */
-    NFT_LED_CHECK_VERSION
+    NFT_LED_CHECK_VERSION;
                 
     /* register logging function to pipe niftyled logging through VLC */
     nft_log_func_register(_log, obj);
