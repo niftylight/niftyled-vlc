@@ -166,12 +166,10 @@ static int Open(vlc_object_t *obj)
         return VLC_ENOMEM;
 
 
-    /* returncode of Open() */
-    int result = VLC_EGENERIC;
-
     /* check libniftyled binary version compatibility */
-    NFT_LED_CHECK_VERSION;
-                
+    if(!NFT_LED_CHECK_VERSION)
+		return VLC_EGENERIC;
+
     /* register logging function to pipe niftyled logging through VLC */
     nft_log_func_register(_log, obj);
         
@@ -186,6 +184,9 @@ static int Open(vlc_object_t *obj)
 	/* initialize babl */
 	led_pixel_format_new();
 
+	/* default returncode of Open() */
+    	int result = VLC_EGENERIC;
+	
 	/* parse config-file */
 	LedPrefsNode *pnode;
 	char *filename = var_InheritString(vd, PROP_CFGFILE);
