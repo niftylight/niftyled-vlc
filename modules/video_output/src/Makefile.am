@@ -24,6 +24,7 @@ libvout_niftyled_plugin_la_CFLAGS = \
     $(vlc_plugin_CFLAGS) \
     $(niftyled_CFLAGS) \
     $(DEBUG_CFLAGS) \
+    -Wno-unused-parameters \
     -DMODULE_STRING=\"niftyled\" -Wall -Wextra
 
 libvout_niftyled_plugin_la_LIBADD = \
