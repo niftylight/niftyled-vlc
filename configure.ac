@@ -1,21 +1,28 @@
 #############
 # VLC video output plugin for niftyled
-# configure.ac - v0.1
+# configure.ac - v0.5
 
 
 # --------------------------------
 #    initialization
 # --------------------------------
+
+# package info
 AC_INIT([niftyled-vlc], m4_esyscmd([./version --short]), [http://github.com/niftylight/niftyled-vlc/issues], [niftyled-vlc], [http://wiki.niftylight.de/AC_PACKAGE_NAME])
-AC_COPYRIGHT([Copyright (C) 2006-2012 Daniel Hiepler])
+AC_COPYRIGHT([Copyright (C) 2006-2013 Daniel Hiepler])
+
+# for cross compiling
 AC_CANONICAL_SYSTEM
+
+# autotools initialization
+AC_LANG(C)
 AC_CONFIG_MACRO_DIR([m4])
 AM_INIT_AUTOMAKE([color-tests dist-bzip2 parallel-tests silent-rules -Wno-portability -Wall])
 
 
 
 # --------------------------------
-#    information on the package
+#    further info on the package
 # --------------------------------
 
 # infos
@@ -32,12 +39,17 @@ AC_SUBST([PACKAGE_MINOR_VERSION], m4_esyscmd([./version --minor]), [minor versio
 AC_SUBST([PACKAGE_MICRO_VERSION], m4_esyscmd([./version --micro]), [micro version])
 
 
+# -----------------------------------------------
+#    libtool stuff
+# -----------------------------------------------
+LT_INIT
+AC_LIBTOOL_WIN32_DLL
+AM_PROG_LIBTOOL
+
+
 # --------------------------------
 #    checks for programs
 # --------------------------------
-AC_PROG_CC_C99
-AM_PROG_CC_C_O
-AM_PROG_LIBTOOL
 PKG_PROG_PKG_CONFIG([0.14])
 if test -z "${PKG_CONFIG}"; then
     AC_MSG_ERROR([*** pkg-config not found. See http://www.freedesktop.org/software/pkgconfig/ or check your distribution.])
@@ -62,6 +74,7 @@ AC_SUBST(niftyled_LIBS)
 # --------------------------------
 #    checks for header files
 # --------------------------------
+AC_HEADER_STDC
 
 
 # --------------------------------
@@ -87,6 +100,8 @@ AC_SUBST(niftyled_LIBS)
 # --------------------------------
 #   compile process
 # --------------------------------
+AC_PROG_CC_C99
+AM_PROG_CC_C_O
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
 
@@ -123,20 +138,19 @@ AC_OUTPUT
 
 
 
-echo "
+echo -e "
 Configure report:
 
-    Package.....................:  ${PACKAGE_STRING}
-    Description.................:  ${PACKAGE_DESCRIPTION}
-    Revision....................:  ${PACKAGE_GIT_VERSION}    
-    URL.........................:  ${PACKAGE_URL}
-    Bugreports..................:  ${PACKAGE_BUGREPORT}
+\tPackage.....................:  ${PACKAGE_STRING}
+\tDescription.................:  ${PACKAGE_DESCRIPTION}
+\tRevision....................:  ${PACKAGE_GIT_VERSION}    
+\tURL.........................:  ${PACKAGE_URL}
+\tBugreports..................:  ${PACKAGE_BUGREPORT}
 
-    Install prefix..............:  ${prefix}
-    C compiler..................:  ${CC}
-    C++ compiler................:  ${CPP}
-    System CFLAGS...............:  ${CFLAGS}
-    System CXXFLAGS.............:  ${CXXFLAGS}
-    System LDFLAGS..............:  ${LDFLAGS}
+\tInstall prefix..............:  ${prefix}
+\tC compiler..................:  ${CC}
+\tSystem CFLAGS...............:  ${CFLAGS}
+\tSystem CXXFLAGS.............:  ${CXXFLAGS}
+\tSystem LDFLAGS..............:  ${LDFLAGS}
 "
 
