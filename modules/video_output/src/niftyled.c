@@ -1,6 +1,6 @@
 /* vlc-niftylight - vlc LED output using libniftyled
  *
- * Copyright (C) 2012  Daniel Hiepler <daniel@niftylight.de>
+ * Copyright (C) 2012-2013  Daniel Hiepler <daniel@niftylight.de>
  * 
  * Authors: Daniel Hiepler
  *
