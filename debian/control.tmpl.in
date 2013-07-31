@@ -2,7 +2,7 @@ Source: @PACKAGE@
 Section: video
 Priority: optional
 Maintainer: Daniel Hiepler <daniel-ubuntu@niftylight.de>
-Build-Depends: debhelper (>= 8.0.0), autotools-dev, vlc-dev, libvlccore-dev, libniftylog-dev, libniftyled-dev
+Build-Depends: debhelper (>= 8.0.0), autotools-dev, libvlccore-dev, libniftylog-dev, libniftyled-dev
 Standards-Version: 3.9.3
 Homepage: @PACKAGE_URL@
 #Vcs-Git: git://github.com/niftylight/niftyled-vlc.git
