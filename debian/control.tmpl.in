@@ -8,6 +8,14 @@ Homepage: @PACKAGE_URL@
 #Vcs-Git: git://github.com/niftylight/niftyled-vlc.git
 #Vcs-Browser: https://github.com/niftylight/niftyled-vlc.git
 
+Package: @PACKAGE_NAME@-dev
+Section: video
+Architecture: any
+Depends: ${misc:Depends}, @PACKAGE_NAME@ (= ${binary:Version}), libniftyprefs-dev, libniftyled-dev
+Description: @PACKAGE_NAME@ library headers
+ This package contains development headers for @PACKAGE_NAME@ -
+ @PACKAGE_DESCRIPTION_LONG@
+
 Package: @PACKAGE_NAME@
 Section: video
 Architecture: any
