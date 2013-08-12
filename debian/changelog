@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 niftyled-vlc (0.1.0) unstable; urgency=medium
+=======
+niftyled-vlc (0.1.0) unstable; urgency=low
+>>>>>>> 92fda3b4ac37e7d7535b4412fb0ef37922c3b0eb
 
   * 0.1.0 release (s. http://github.com/niftylight/niftyled-vlc/commits/master 
     for a complete list of changes)
