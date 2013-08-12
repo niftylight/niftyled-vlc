@@ -1,5 +1,6 @@
-niftyled-vlc (0.1.0-0) unstable; urgency=low
+niftyled-vlc (0.1.0) unstable; urgency=medium
 
-  * Initial release
+  * 0.1.0 release (s. http://github.com/niftylight/niftyled-vlc/commits/master 
+    for a complete list of changes)
 
  -- Daniel Hiepler <daniel-ubuntu@niftylight.de>  Mon, 22 Oct 2012 00:26:07 +0200
