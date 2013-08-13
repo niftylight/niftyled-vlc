@@ -133,6 +133,7 @@ AC_CONFIG_FILES(
     modules/video_output/Makefile
     modules/video_output/src/Makefile
     gentoo/media-plugins/niftyled-vlc/niftyled-vlc-9999.ebuild
+    debian/changelog
     debian/control.tmpl
     debian/rules.tmpl
 ])
