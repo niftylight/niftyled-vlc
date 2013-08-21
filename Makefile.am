@@ -29,5 +29,5 @@ deb: dist-gzip
 	mv "$(DEBSRCDIR)/debian/rules.tmpl"                 "$(DEBSRCDIR)/debian/rules" && \
 	mv "$(DEBSRCDIR)/debian/control.tmpl"               "$(DEBSRCDIR)/debian/control" && \
 	cd "$(DEBSRCDIR)" && \
-	dpkg-buildpackage -b
+	dpkg-buildpackage -D
 
