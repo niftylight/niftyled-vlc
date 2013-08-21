@@ -17,7 +17,7 @@ EXTRA_DIST = \
 # needs dpkg-dev, debhelper
 DEBTMPDIR=$(abs_top_builddir)/deb-tmp
 DEBSRCDIR=$(DEBTMPDIR)/@PACKAGE_NAME@-@PACKAGE_VERSION@
-TARGZFILE=$(DEBTMPDIR)/@PACKAGE_NAME@-@PACKAGE_VERSION@.orig.tar.gz
+TARGZFILE=$(DEBTMPDIR)/@PACKAGE_NAME@_@PACKAGE_VERSION@.orig.tar.gz
 
 deb: dist-gzip
 	@echo "Building Debian package..."; \
