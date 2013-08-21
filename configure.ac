@@ -37,6 +37,8 @@ AC_DEFINE_UNQUOTED(PACKAGE_DESCRIPTION, "${PACKAGE_DESCRIPTION}", [package descr
 AC_SUBST([PACKAGE_MAJOR_VERSION], m4_esyscmd([./version --major]), [major version])
 AC_SUBST([PACKAGE_MINOR_VERSION], m4_esyscmd([./version --minor]), [minor version])
 AC_SUBST([PACKAGE_MICRO_VERSION], m4_esyscmd([./version --micro]), [micro version])
+AC_SUBST([PACKAGE_GIT_VERSION], m4_esyscmd([./version --git]), [git version])
+AC_SUBST([DEBIAN_REVISION], m4_esyscmd([./version --debian]), [debian revision])
 
 
 # -----------------------------------------------
@@ -136,6 +138,7 @@ AC_CONFIG_FILES(
     debian/changelog
     debian/control.tmpl
     debian/rules.tmpl
+    debian/watch
 ])
 AC_OUTPUT
 
