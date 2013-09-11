@@ -220,10 +220,14 @@ static int Open(vlc_object_t *obj)
     }
 
     /* determine dimensions of LED setup */
+	LedFrameCord w,h;
+	if(!led_setup_get_dim(sys->setup, &w, &h))
+				goto _o_error;
+		
     if((sys->width = (LedFrameCord) var_InheritInteger(vd, PROP_WIDTH)) <= 0)
-        sys->width = led_setup_get_width(sys->setup);
+        sys->width = w;
     if((sys->height = (LedFrameCord) var_InheritInteger(vd, PROP_HEIGHT)) <= 0)
-        sys->height = led_setup_get_height(sys->setup);
+        sys->height = h;
 
     msg_Info(obj, "initialized %dx%d pixel LED setup", sys->width, sys->height);
 
