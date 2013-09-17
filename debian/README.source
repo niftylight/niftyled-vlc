@@ -1,4 +1,15 @@
-niftyled VLC output plugin for Debian
--------------------------------------
+VLC plugin to use LED hardware (Debian package)
+===============================================
 
-niftyled VLC output plugin source package. More information at http://wiki.niftylight.de/vlc-output
+niftyled VLC output plugin source package.
+
+
+
+------------------------------------------------------------------------------
+
+Project page:	http://wiki.niftylight.de/niftyled-vlc  
+Sourcecode:	http://github.com/niftylight/niftyled-vlc  
+Issue tracker:	http://github.com/niftylight/niftyled-vlc/issues  
+Mailinglist:	niftyled@googlegroups.com  
+IRC chat:	irc://irc.freenode.net/niftylight
+

@@ -5,8 +5,10 @@ Video output plugin for the VideoLAN client to output video to an LED setup.
 
 
 
-Project page:	http://wiki.niftylight.de/vlc-output  
-Repository:	http://github.com/niftylight/niftyled-vlc  
+------------------------------------------------------------------------------
+
+Project page:	http://wiki.niftylight.de/niftyled-vlc  
+Sourcecode:	http://github.com/niftylight/niftyled-vlc  
 Issue tracker:	http://github.com/niftylight/niftyled-vlc/issues  
 Mailinglist:	niftyled@googlegroups.com  
 IRC chat:	irc://irc.freenode.net/niftylight   
