@@ -9,7 +9,7 @@
 
 # package info
 AC_INIT([niftyled-vlc], m4_esyscmd([./version --short]), [http://github.com/niftylight/niftyled-vlc/issues], [niftyled-vlc], [http://wiki.niftylight.de/AC_PACKAGE_NAME])
-AC_COPYRIGHT([Copyright (C) 2006-2013 Daniel Hiepler])
+AC_COPYRIGHT([Copyright (C) 2006-2014 Daniel Hiepler])
 
 # for cross compiling
 AC_CANONICAL_SYSTEM
