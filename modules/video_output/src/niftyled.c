@@ -190,7 +190,7 @@ static int Open(vlc_object_t *obj)
 	/* parse config-file */
 	LedPrefsNode *pnode;
 	char *filename = var_InheritString(vd, PROP_CFGFILE);
-	if(!(pnode = led_prefs_node_from_file(filename)))
+	if(!(pnode = led_prefs_node_from_file(LED_PREFS_VERSION, filename)))
 	{
 		msg_Err(obj, "failed to load config from \"%s\"", filename);
 		result = VLC_ENOITEM;
@@ -331,7 +331,7 @@ static picture_pool_t *Pool(vout_display_t *vd, unsigned count)
     if(!led_hardware_list_refresh_mapping(sys->hw))
             goto _p_error;
 		
-	/* precalc memory offsets for actual mapping */
+    /* precalc memory offsets for actual mapping */
     if(!led_chain_map_from_frame(led_hardware_get_chain(sys->hw), sys->frame))
             goto _p_error;
 		
