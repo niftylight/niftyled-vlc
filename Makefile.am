@@ -10,8 +10,7 @@ SUBDIRS = \
 	modules
 
 EXTRA_DIST = \
-	gentoo \
-	debian
+	dist
 
 # create .deb package
 # needs dpkg-dev, debhelper
