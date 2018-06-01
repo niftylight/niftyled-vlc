@@ -264,7 +264,7 @@ static int Open(vlc_object_t *obj)
     //sys->state = *vd->cfg;
     //sys->state.is_fullscreen = false;
     vout_display_SendEventFullscreen(vd, false);
-    vout_display_SendEventDisplaySize(vd, fmt.i_width, fmt.i_height, false);
+    vout_display_SendEventDisplaySize(vd, fmt.i_width, fmt.i_height);
 
     msg_Info(obj, "niftyled plugin initialization finished! :)");
 
